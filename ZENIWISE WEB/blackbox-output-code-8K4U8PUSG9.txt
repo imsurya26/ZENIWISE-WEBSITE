@@ -1,0 +1,21 @@
+import React, { useState, useEffect } from 'react';
+
+const tips = [
+  "Cook at home twice a week to save ₹300/month.",
+  "Use public transport instead of rideshares.",
+  "Track small expenses to avoid overspending.",
+  "Set aside 10% of income for emergencies.",
+  "Buy in bulk for groceries to save money."
+];
+
+function Tips() {
+  const [currentTips, setCurrentTips] = useState([]);
+
+  useEffect(() => {
+    // Simple rule-based: show random tips
+    setCurrentTips(tips.slice(0, 3));
+  }, []);
+
+  return (
+    <div className="card">
+      <h2 className="text-xl font-semibold mb

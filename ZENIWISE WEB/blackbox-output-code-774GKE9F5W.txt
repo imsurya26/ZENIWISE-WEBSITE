@@ -1,0 +1,70 @@
+import React, { useState, useEffect } from 'react';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
+function Dashboard({ privacyMode }) {
+  const [data, setData] = useState({ income: 0, expenses: [], goals: [] });
+  const [totalSpent, setTotalSpent] = useState(0);
+  const [remaining, setRemaining] = useState(0);
+
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem('zeniwise_data'));
+    setData(storedData);
+    const spent = storedData.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+    setTotalSpent(spent);
+    setRemaining(storedData.income - spent);
+  }, []);
+
+  const chartData = {
+    labels: ['Food', 'Travel', 'Study', 'Misc'],
+    datasets: [{
+      label: 'Spending',
+      data: [
+        data.expenses.filter(e => e.category === 'Food').reduce((sum, e) => sum + e.amount, 0),
+        data.expenses.filter(e => e.category === 'Travel').reduce((sum, e) => sum + e.amount, 0),
+        data.expenses.filter(e => e.category === 'Study').reduce((sum, e) => sum + e.amount, 0),
+        data.expenses.filter(e => e.category === 'Misc').reduce((sum, e) => sum + e.amount, 0),
+      ],
+      backgroundColor: ['#FCE4EC', '#FFF8E1', '#E0F7FA', '#F3E5F5'],
+    }],
+  };
+
+  return (
+    <div>
+      <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div className="card">
+          <h3>Total Income</h3>
+          <p className="text-2xl">{privacyMode ? '***' : `₹${data.income}`}</p>
+        </div>
+        <div className="card">
+          <h3>Total Spent</h3>
+          <p className="text-2xl">{privacyMode ? '***' : `₹${totalSpent}`}</p>
+        </div>
+        <div className="card">
+          <h3>Remaining Savings</h3>
+          <p className="text-2xl">{privacyMode ? '***' : `₹${remaining}`}</p>
+        </div>
+      </div>
+      <div className="card mb-4">
+        <h3>This Month’s Spending</h3>
+        <Bar data={chartData} />
+      </div>
+      <div className="card">
+        <h3>Expense List</h3>
+        <ul>
+          {data.expenses.map((exp, idx) => (
+            <li key={idx} className="flex justify-between py-1">
+              <span>{exp.date} - {exp.category}</span>
+              <span>{privacyMode ? '***' : `₹${exp.amount}`}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+export default Dashboard;

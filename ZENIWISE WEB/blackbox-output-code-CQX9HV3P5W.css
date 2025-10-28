@@ -1,0 +1,16 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #E0F7FA; /* Soft pastel background */
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-md p-4 transition-transform duration-200 hover:scale-105;
+}
+
+.btn {
+  @apply bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition;
+}

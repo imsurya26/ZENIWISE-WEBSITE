@@ -1,0 +1,62 @@
+import React, { useState } from 'react';
+
+function AddExpense() {
+  const [date, setDate] = useState('');
+  const [category, setCategory] = useState('Food');
+  const [amount, setAmount] = useState('');
+  const [notes, setNotes] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const data = JSON.parse(localStorage.getItem('zeniwise_data'));
+    data.expenses.push({ date, category, amount: parseFloat(amount), notes });
+    localStorage.setItem('zeniwise_data', JSON.stringify(data));
+    // Reset form
+    setDate('');
+    setAmount('');
+    setNotes('');
+    alert('Expense added!');
+  };
+
+  return (
+    <div className="card">
+      <h2 className="text-xl font-semibold mb-4">Add Expense</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="w-full p-2 mb-2 border rounded"
+          required
+        />
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="w-full p-2 mb-2 border rounded"
+        >
+          <option>Food</option>
+          <option>Travel</option>
+          <option>Study</option>
+          <option>Misc</option>
+        </select>
+        <input
+          type="number"
+          placeholder="Amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="w-full p-2 mb-2 border rounded"
+          required
+        />
+        <textarea
+          placeholder="Notes"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          className="w-full p-2 mb-4 border rounded"
+        />
+        <button type="submit" className="btn">Add Expense</button>
+      </form>
+    </div>
+  );
+}
+
+export default AddExpense;
